@@ -5,7 +5,7 @@ from cvzone.HandTrackingModule import HandDetector
 import google.generativeai as genai
 from PIL import Image
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # Initialize the webcam to capture video
 cap = cv2.VideoCapture(0)
@@ -128,5 +128,5 @@ def index():
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)
