@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gesture Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #bb86fc;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .video-container {
+            border: 2px solid #333;
+            margin-right: 20px;
+            max-width: 800px;
+            flex: 2;
+        }
+
+        .response-container {
+            border: 1px solid #333;
+            background-color: #1e1e1e;
+            padding: 20px;
+            max-width: 300px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .response-container h2 {
+            color: #bb86fc;
+            margin-top: 0;
+        }
+
+        #response {
+            padding: 10px;
+        }
+
+        .response-container p {
+            word-wrap: break-word;
+        }
+    </style>
+    <script>
+        function fetchResponse() {
+            fetch('/get_response')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response) {
+                        document.getElementById('response').innerHTML = '<h2>Answer:</h2><p>' + data.response + '</p>';
+                    }
+                })
+                .catch(error => console.error('Error fetching response:', error));
+        }
+
+        setInterval(fetchResponse, 1000);  // Fetch response every second
+    </script>
+</head>
+<body>
+    <h1>Hand Tracking Drawing</h1>
+    <div class="container">
+        <div class="video-container">
+            <img src="{{ url_for('video_feed') }}" width="800" />
+        </div>
+        <div class="response-container">
+            <div id="response">
+                <h2>Answer:</h2>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
