@@ -5,15 +5,12 @@ from cvzone.HandTrackingModule import HandDetector
 import google.generativeai as genai
 from PIL import Image
 import threading
+import warnings
+
+# Suppress the specific deprecation warning
+warnings.filterwarnings("ignore", category=UserWarning, message="SymbolDatabase.GetPrototype() is deprecated. Please use message_factory.GetMessageClass() instead. SymbolDatabase.GetPrototype() will be removed soon.")
 
 app = Flask(__name__)
-
-# Initialize the webcam to capture video
-cap = cv2.VideoCapture(0)
-
-if not cap.isOpened():
-    print("Error: Could not open webcam.")
-    exit()
 
 # Initialize gemini
 genai.configure(api_key="AIzaSyAHR1jdjWT1CF3rGoNhyRmJbEWjbi5GMMw")
@@ -50,6 +47,13 @@ points = []  # Store points for drawing
 smooth_points = None  # Smoothed position
 
 # Initialize canvas
+def initialize_video_capture():
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        raise RuntimeError("Error: Could not open webcam.")
+    return cap
+
+cap = initialize_video_capture()
 _, frame = cap.read()
 canvas = initialize_canvas(frame)
 
@@ -63,12 +67,12 @@ class VideoCaptureThread(threading.Thread):
         self.running = True
 
     def run(self):
-        global prev_pos, drawing, points, smooth_points, canvas, global_frame
+        global prev_pos, drawing, points, smooth_points, canvas, global_frame, cap
         while self.running:
             success, img = cap.read()
             if not success:
                 print("Failed to capture image")
-                break
+                continue  # Skip this iteration
 
             img = cv2.flip(img, 1)
             hands, img = detector.findHands(img, draw=True, flipType=True)
@@ -139,6 +143,6 @@ def video_feed():
 
 if __name__ == '__main__':
     try:
-        app.run(debug=True)
+        app.run(debug=True, use_reloader=False)
     finally:
         video_thread.stop()
