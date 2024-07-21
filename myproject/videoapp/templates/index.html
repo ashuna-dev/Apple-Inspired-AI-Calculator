@@ -26,14 +26,15 @@
             display: flex;
             flex-direction: row;
             align-items: flex-start;
-            max-width: 1200px;
+            max-width: 1600px;  /* Increased max-width */
             width: 100%;
         }
 
         .video-container {
             border: 2px solid #333;
             margin-right: 20px;
-            max-width: 800px;
+            width: 1200px;  /* Increased width */
+            height: 900px;  /* Added height */
             flex: 2;
         }
 
@@ -41,10 +42,10 @@
             border: 1px solid #333;
             background-color: #1e1e1e;
             padding: 20px;
-            max-width: 300px;
+            max-width: 400px;  /* Increased max-width */
             flex: 1;
             overflow-y: auto;
-            max-height: 600px;
+            max-height: 900px;  /* Added max-height */
         }
 
         .response-container h2 {
@@ -61,30 +62,43 @@
         }
     </style>
     <script>
-        function fetchResponse() {
-            fetch('/get_response')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.response) {
-                        document.getElementById('response').innerHTML = '<h2>Answer:</h2><p>' + data.response + '</p>';
-                    }
-                })
-                .catch(error => console.error('Error fetching response:', error));
+        let socket = new WebSocket('ws://' + window.location.host + '/ws/response/');
+
+        socket.onmessage = function(event) {
+            let data = JSON.parse(event.data);
+            if (data.response) {
+                document.getElementById('response').innerHTML = '<h2>Answer:</h2><p>' + data.response + '</p>';
+            }
+        };
+
+        function sendImage(imageData) {
+            socket.send(JSON.stringify({'image': imageData}));
         }
 
-        setInterval(fetchResponse, 1000);  // Fetch response every second
+        function captureAndSendImage() {
+            // Capture the image from the video feed and send it to the server
+            let canvas = document.createElement('canvas');
+            let video = document.querySelector('img');
+            canvas.width = video.width;
+            canvas.height = video.height;
+            let context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            let imageData = canvas.toDataURL('image/jpeg').split(',')[1];
+            sendImage(imageData);
+        }
+
+        setInterval(captureAndSendImage, 1000);  // Capture and send image every second
     </script>
 </head>
 <body>
     <h1>Hand Tracking Drawing</h1>
     <div class="container">
         <div class="video-container">
-            <img src="{% url 'video_feed' %}" width="800" />
+            <img src="{% url 'video_feed' %}" width="1200" height="900" />  <!-- Updated width and height -->
         </div>
         <div class="response-container">
             <div id="response">
                 <h2>Answer:</h2>
-                
             </div>
         </div>
     </div>
