@@ -1,0 +1,6 @@
+Django==4.2
+opencv-python==4.8.0.74
+numpy==1.23.5
+Pillow==9.3.0
+google-generativeai==0.1.0
+cvzone==1.5.6
