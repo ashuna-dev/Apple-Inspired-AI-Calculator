@@ -7,7 +7,7 @@ import google.generativeai as genai
 from PIL import Image
 
 # Initialize gemini
-genai.configure(api_key="AIzaSyAHR1jdjWT1CF3rGoNhyRmJbEWjbi5GMMw")
+genai.configure(api_key="Enter_Your_Gemini_API_Key")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Initialize the HandDetector class with the given parameters
