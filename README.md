@@ -44,7 +44,7 @@ The Apple-Inspired AI Calculator is an innovative project that utilizes OpenCV a
 
 ## 🎥 Demo Video
 
-Check out the demo video to see the Virtual AI Calculator in action:
+Check out the demo video to see the Virtual AI Calculator in action:60k+ reactions
 
 [Watch the Demo on LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:7221422183175139328/)
 
